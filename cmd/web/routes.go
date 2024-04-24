@@ -5,14 +5,18 @@ import (
 
 	"github.com/MelihcanSrky/BasicWebApp/pkg/config"
 	"github.com/MelihcanSrky/BasicWebApp/pkg/handlers"
-	"github.com/bmizerany/pat"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 )
 
 func routes(app *config.AppConfig) http.Handler {
-	mux := pat.New()
+	mux := chi.NewRouter()
 
-	mux.Get("/", http.HandlerFunc(handlers.Repo.Home))
-	mux.Get("/about", http.HandlerFunc(handlers.Repo.About))
+	mux.Use(middleware.Recoverer)
+	mux.Use(WriteToConsole)
+
+	mux.Get("/", handlers.Repo.Home)
+	mux.Get("/about", handlers.Repo.About)
 
 	return mux
 }
